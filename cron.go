@@ -6,7 +6,7 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/monk-api/model"
+	"github.com/The-Monk-News/monk-api/model"
 	"github.com/robfig/cron"
 )
 
