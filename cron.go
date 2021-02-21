@@ -1,10 +1,11 @@
-package main
+package cron
 
 import (
 	"encoding/json"
 	"fmt"
 	"log"
 	"net/http"
+	"time"
 
 	"github.com/The-Monk-News/monk-api/model"
 	"github.com/robfig/cron"
@@ -14,6 +15,7 @@ func main() {
 	c := cron.New()
 	c.AddFunc("*/1 * * * *", getNews)
 	c.Start()
+	time.Sleep(2 * time.Minute)
 }
 
 func getNews() {
