@@ -1,4 +1,4 @@
-package cron
+package main
 
 import (
 	"encoding/json"
@@ -11,7 +11,7 @@ import (
 	"github.com/robfig/cron"
 )
 
-func main() {
+func fetchNewsEveryMinute() {
 	c := cron.New()
 	c.AddFunc("*/1 * * * *", getNews)
 	c.Start()
