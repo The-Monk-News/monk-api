@@ -11,7 +11,6 @@ import (
 	"github.com/The-Monk-News/monk-api/model"
 	"github.com/robfig/cron"
 
-	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"go.mongodb.org/mongo-driver/mongo/readpref"
@@ -19,7 +18,7 @@ import (
 
 func fetchNewsEveryMinute() {
 	c := cron.New()
-	c.AddFunc("*/1 * * * *", getNews)
+	c.AddFunc("*/5 * * * *", getNews)
 	c.Start()
 	time.Sleep(2 * time.Minute)
 }
@@ -35,7 +34,7 @@ func getNews() {
 	if error := json.NewDecoder(resp.Body).Decode(&nresp); error != nil {
 		log.Fatal(error)
 	}
-
+	// fmt.Println(nresp)
 	client, err := mongo.NewClient(options.Client().ApplyURI("mongodb+srv://monkBro:FUCKOFF@cluster0.nb9eh.mongodb.net/NewsDB?retryWrites=true&w=majority"))
 	if err != nil {
 		log.Fatal(err)
@@ -53,9 +52,12 @@ func getNews() {
 		log.Fatal(err)
 	}
 
-	databases, err := client.ListDatabaseNames(ctx, bson.M{})
+	database := client.Database("Monk_db")
+	newsCollection := database.Collection("News")
+	newsCollection.DeleteMany(ctx, nil)
+	uploadNews, err := newsCollection.InsertOne(ctx, nresp)
 	if err != nil {
 		log.Fatal(err)
 	}
-	fmt.Println(databases)
+	fmt.Println(uploadNews)
 }
